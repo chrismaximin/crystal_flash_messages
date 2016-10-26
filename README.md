@@ -29,7 +29,7 @@ Typically, you would add this to `app/views/layouts/application.html.erb`:
 
 ```html
 <div class="alert alert-danger flash-error" role="alert">
-  <p>Test</p>
+  Test
 </div>
 ```
 
