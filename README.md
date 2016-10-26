@@ -8,7 +8,7 @@ A simple Rails view helper which displays one or more HTML `div`s with the `flas
 
 ## Install
 
-**Crystal Error Messages**'s installation is pretty standard, add the following line to your `Gemfile`, then run `bundle install`:
+**The installation is pretty standard, add the following line to your `Gemfile`, then run `bundle install`:
 
 ```rb
 gem 'crystal_flash_messages'
