@@ -1,27 +1,25 @@
+require 'cgi'
+
 module CrystalFlashMessages
   module Helpers
-    include ActionView::Helpers::TagHelper
-
     def crystal_flash_messages(options = {})
       return '' if flash.empty?
-      config = local_config(options)
+      private_helpers = CrystalFlashMessages::PrivateHelpers
 
+      config = private_helpers.local_config(options)
       flash.map do |key, message|
-        wrapper(key.to_s, message, config)
+        private_helpers.wrapper(key.to_s, message, config)
       end.join.html_safe
     end
+  end
 
-    private
-
-    def wrapper(key, message, config)
+  module PrivateHelpers
+    def self.wrapper(key, message, config)
       class_attr = wrapper_class_attr(key, config)
-
-      content_tag(:div, class: class_attr, role: 'alert') do
-        message
-      end
+      tag(:div, message, class: class_attr, role: 'alert')
     end
 
-    def wrapper_class_attr(key, config)
+    def self.wrapper_class_attr(key, config)
       boostrap_translations = { 'error' => 'danger', 'notice' => 'info' }
       boostrap_translations.default = key
       base = []
@@ -32,12 +30,22 @@ module CrystalFlashMessages
       base.join(' ')
     end
 
-    def local_config(options)
+    def self.local_config(options)
       config = CrystalFlashMessages.configuration.clone
       options.each_pair do |k, v|
         config.send(k.to_s + '=', v)
       end
       config
+    end
+
+    def self.tag(name, value, attributes = {})
+      string_attributes = attributes.inject('') do |attrs, pair|
+        unless pair.last.nil?
+          attrs << %( #{pair.first}="#{CGI.escapeHTML(pair.last.to_s)}")
+        end
+        attrs
+      end
+      "<#{name}#{string_attributes}>#{value}</#{name}>"
     end
   end
 end
